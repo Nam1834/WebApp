@@ -2,5 +2,5 @@
   "server": {
     "port": 3001
   },
-  "enviroment": "default"
+  "enviroment": "development"
 }
