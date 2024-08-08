@@ -14,21 +14,21 @@ export class BaseRepository<T extends Model> {
     );
   }
 
-  async findById(id: number): Promise<T | null> {
-    return await this.model.findByPk(id);
+  async findById(ID: number): Promise<T | null> {
+    return await this.model.findByPk(ID);
   }
 
   async findAll(): Promise<T[]> {
     return await this.model.findAll();
   }
 
-  async update(id: number, data: Partial<T>): Promise<T> {
-    const recordToUpdate = await this.model.findByPk(id);
+  async update(ID: number, data: Partial<T>): Promise<T> {
+    const recordToUpdate = await this.model.findByPk(ID);
     return await recordToUpdate!.update(data);
   }
 
-  async delete(id: number): Promise<any> {
-    const recordToDelete = await this.model.findByPk(id);
+  async delete(ID: number): Promise<any> {
+    const recordToDelete = await this.model.findByPk(ID);
     return await recordToDelete!.destroy();
   }
 }

@@ -17,7 +17,7 @@ userRoute.post(
 userRoute.post("/user/login", userController.login.bind(userController));
 
 userRoute.put(
-  "/user/:id",
+  "/user",
   Validator("updateUserValidate"),
   authenticate,
   userController.update.bind(userController)

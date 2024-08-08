@@ -13,7 +13,7 @@ export class UserService extends BaseService<User> {
     this.userRepository = new UserRepository();
   }
   async login(phoneNumber: string, passWord: string) {
-    const user = await this.userRepository.findByphoneNumber(phoneNumber);
+    const user = await this.userRepository.findByPhoneNumber(phoneNumber);
     if (!user) {
       throw new Error("User not found");
     }
@@ -33,5 +33,20 @@ export class UserService extends BaseService<User> {
     });
 
     return { token, user: { ...user.get(), passWord: undefined } };
+  }
+  async updateUser(IDUser: number, data: Partial<User>): Promise<User | null> {
+    const user = await this.repository.findById(IDUser);
+
+    if (!user) {
+      return null;
+    }
+
+    if (data.passWord) {
+      user.passWord = data.passWord;
+    }
+
+    await this.repository.update(IDUser, data);
+
+    return user;
   }
 }

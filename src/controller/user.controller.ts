@@ -3,6 +3,7 @@ import { BaseController } from "./base/base.controller";
 import { UserService } from "../service/user.service";
 import { User } from "../models/user.model";
 import Joi from "joi";
+import { UserRequest } from "../middleware/authenticate.middleware";
 
 class UserController extends BaseController<User> {
   protected userService: UserService;
@@ -16,10 +17,28 @@ class UserController extends BaseController<User> {
   //   await this.userService.getById(data);
   // }
 
-  // async createUser(req: Request, res: Response): Promise<void> {
-  //   const data = req.body;
-  //   await this.userService.create(data);
-  // }
+  async updateUser(req: Request, res: Response): Promise<void> {
+    const loggedinUser = (req as UserRequest).user;
+    try {
+      const data = req.body;
+      const updatedUser = await this.userService.updateUser(
+        loggedinUser.IDUser,
+        data
+      );
+
+      if (!updatedUser) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      res.json(updatedUser);
+    } catch (error: any) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while updating the user" });
+    }
+  }
   async login(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
