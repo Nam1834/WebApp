@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY: any = process.env.SECRET_KEY;
 
 export interface UserRequest extends Request {
-  user: { IDUser: number };
+  user: { idUser: number };
 }
 
 export function authenticate(req: Request, res: Response, next: NextFunction) {

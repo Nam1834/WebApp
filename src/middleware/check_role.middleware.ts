@@ -1,9 +1,11 @@
 import { User } from "../models/user.model";
 import { Request, Response, NextFunction } from "express";
+import { UserRequest } from "./authenticate.middleware";
 const checkRole = (role: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await User.findByPk();
+      const loggedinUser = (req as UserRequest).user;
+      const user = await User.findByPk(loggedinUser.idUser);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });

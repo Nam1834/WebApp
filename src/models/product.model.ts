@@ -5,7 +5,10 @@ import {
   DataType,
   PrimaryKey,
   AutoIncrement,
+  ForeignKey,
+  BelongsTo,
 } from "sequelize-typescript";
+import { Category } from "./category.model";
 
 @Table({
   timestamps: false,
@@ -20,30 +23,41 @@ export class Product extends Model {
   })
   ID!: Number;
 
+  @ForeignKey(() => Category)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   IDCategory!: Number;
 
+  @BelongsTo(() => Category)
+  category!: Category;
+
   @Column({
     type: DataType.STRING,
     allowNull: true,
     defaultValue: false,
   })
-  nameProduct!: string;
+  productName!: string;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+    defaultValue: 0,
+  })
+  productPrice!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    defaultValue: false,
+  })
+  productImage!: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
-    defaultValue: false,
+    defaultValue: 0,
   })
-  price!: number;
-
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: true,
-    defaultValue: false,
-  })
-  quantity!: number;
+  productQuantity!: number;
 }

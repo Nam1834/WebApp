@@ -6,9 +6,10 @@ import {
   PrimaryKey,
   AutoIncrement,
   BeforeCreate,
-  AfterCreate,
   BeforeUpdate,
+  HasMany,
 } from "sequelize-typescript";
+import { Cart } from "./cart.model";
 const bcrypt = require("bcrypt");
 
 @Table({
@@ -64,4 +65,6 @@ export class User extends Model {
     const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
     record.dataValues.passWord = hash;
   }
+  @HasMany(() => Cart)
+  carts!: Cart[];
 }

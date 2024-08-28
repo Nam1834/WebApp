@@ -22,6 +22,8 @@ app.get("/", (req: Request, res: Response): Response => {
   return res.json({ message: "Sequelize Example" });
 });
 
+app.use(ErrorHandler);
+
 const start = async (): Promise<void> => {
   try {
     await connection.sync();
@@ -35,5 +37,4 @@ const start = async (): Promise<void> => {
   }
 };
 
-app.use(ErrorHandler);
 void start();

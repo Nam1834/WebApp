@@ -20,7 +20,7 @@ userRoute.put(
   "/user",
   Validator("updateUserValidate"),
   authenticate,
-  userController.update.bind(userController)
+  userController.updateUser.bind(userController)
 );
 
 userRoute.delete(

@@ -34,8 +34,8 @@ export class UserService extends BaseService<User> {
 
     return { token, user: { ...user.get(), passWord: undefined } };
   }
-  async updateUser(IDUser: number, data: Partial<User>): Promise<User | null> {
-    const user = await this.repository.findById(IDUser);
+  async updateUser(idUser: number, data: Partial<User>): Promise<User | null> {
+    const user = await this.repository.findById(idUser);
 
     if (!user) {
       return null;
@@ -45,7 +45,7 @@ export class UserService extends BaseService<User> {
       user.passWord = data.passWord;
     }
 
-    await this.repository.update(IDUser, data);
+    await this.repository.update(idUser, data);
 
     return user;
   }

@@ -44,7 +44,7 @@ export class BaseController<T extends Model> {
     try {
       const id = parseInt(req.params.id, 10);
       await this.service.delete(id);
-      res.status(200).json("delete was successfully");
+      res.status(200).json("Delete was successfully");
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

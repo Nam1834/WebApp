@@ -5,6 +5,7 @@ import {
   DataType,
   PrimaryKey,
   AutoIncrement,
+  HasMany,
 } from "sequelize-typescript";
 import { Product } from "./product.model";
 
@@ -27,6 +28,7 @@ export class Category extends Model {
     defaultValue: false,
   })
   nameCategory!: string;
-}
 
-Category.hasMany(Product, { as: "Category", foreignKey: "IDCategory" });
+  @HasMany(() => Product)
+  products!: Product[];
+}
