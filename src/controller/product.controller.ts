@@ -13,13 +13,11 @@ class ProductController extends BaseController<Product> {
 
   async uploadFile(req: Request, res: Response): Promise<void> {
     try {
-      await this.productService.uploadFile(req, res);
-      res
-        .status(200)
-        .json({
-          message: "File uploaded successfully",
-          fileName: req.file?.filename,
-        });
+      const fileUrl = await this.productService.uploadFile(req, res);
+      res.status(200).json({
+        message: "File uploaded successfully",
+        fileUrl: fileUrl,
+      });
     } catch (error: any) {
       console.error(error);
       res
@@ -30,18 +28,43 @@ class ProductController extends BaseController<Product> {
 
   async create(req: Request, res: Response): Promise<void> {
     try {
+      const fileUrl = req.body.productImage || "";
       const data = req.body;
-
-      const newProduct = await this.productService.createProduct(
-        data,
-        req.body.productImage
-      );
+      const newProduct = await this.productService.createProduct(data, fileUrl);
       res.status(201).json(newProduct);
+    } catch (error: any) {
+      console.error(error);
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  async getProduct(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const product = await this.productService.getProduct(id);
+      if (product) {
+        res.status(200).json(product);
+      } else {
+        res.status(404).json({ message: "Product not found" });
+      }
     } catch (error: any) {
       console.error(error);
       res
         .status(500)
-        .json({ message: "An error occurred while creating the product" });
+        .json({ message: "An error occurred while retrieving the product" });
+    }
+  }
+  async getProductsByPage(req: Request, res: Response): Promise<void> {
+    try {
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const limit = 10;
+      const products = await this.productService.getProductsByPage(page, limit);
+      res.status(200).json(products);
+    } catch (error: any) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while retrieving products" });
     }
   }
 }

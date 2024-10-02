@@ -10,7 +10,7 @@ export class ProductService extends BaseService<Product> {
   private storage = multer.diskStorage({
     destination: (req, file, cb) => {
       const uploadDir = process.env.UPLOADS_DIR || "uploads/";
-      cb(null, uploadDir); // Thư mục lưu trữ file
+      cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -20,16 +20,20 @@ export class ProductService extends BaseService<Product> {
 
   public upload = multer({ storage: this.storage });
 
+  protected repository = new ProductRepository();
+
   constructor() {
     super(new ProductRepository());
+    this.repository = new ProductRepository();
   }
-  async uploadFile(req: Request, res: Response): Promise<void> {
+  async uploadFile(req: Request, res: Response): Promise<string> {
     return new Promise((resolve, reject) => {
       this.upload.single("productImage")(req, res, (err: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve();
+          const fileUrl = `${process.env.BASE_URL}/uploads/${req.file?.filename}`;
+          resolve(fileUrl);
         }
       });
     });
@@ -37,12 +41,44 @@ export class ProductService extends BaseService<Product> {
 
   async createProduct(
     data: Partial<Product>,
-    fileName?: string
+    fileUrl?: string
   ): Promise<Product> {
+    const existingProduct = await this.repository.findByName(
+      data.productName || ""
+    );
+
+    if (existingProduct) {
+      throw new Error("Product already exists");
+    }
     const productData = {
       ...data,
-      productImage: fileName || "",
+      productImage: fileUrl || "",
     };
     return await this.repository.create(productData as Product);
+  }
+
+  async getProduct(id: number): Promise<Product | null> {
+    return await this.repository.findById(id);
+  }
+  async getProductsByPage(
+    page: number,
+    limit: number
+  ): Promise<{ products: Product[]; currentPage: number; totalPages: number }> {
+    const offset = (page - 1) * limit;
+
+    const totalProducts = await this.repository.count();
+
+    const products = await this.repository.findAll({
+      limit,
+      offset,
+    });
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    return {
+      products,
+      currentPage: page,
+      totalPages,
+    };
   }
 }

@@ -36,7 +36,6 @@ export class Product extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    defaultValue: false,
   })
   productName!: string;
 

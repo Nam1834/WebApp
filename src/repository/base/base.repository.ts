@@ -1,3 +1,4 @@
+import { FindOptions } from "sequelize";
 import { Model, ModelCtor } from "sequelize-typescript";
 import { MakeNullishOptional } from "sequelize/types/utils";
 
@@ -8,7 +9,8 @@ export class BaseRepository<T extends Model> {
     this.model = model;
   }
 
-  async create(data: T): Promise<T> {
+  //Partial<T> giup chuyen cac column trong model thanh optional
+  async create(data: Partial<T>): Promise<T> {
     return await this.model.create(
       data as MakeNullishOptional<T["_creationAttributes"]>
     );
@@ -18,8 +20,8 @@ export class BaseRepository<T extends Model> {
     return await this.model.findByPk(ID);
   }
 
-  async findAll(): Promise<T[]> {
-    return await this.model.findAll();
+  async findAll(options: FindOptions = {}): Promise<T[]> {
+    return await this.model.findAll(options);
   }
 
   async update(ID: number, data: Partial<T>): Promise<T> {
@@ -30,5 +32,11 @@ export class BaseRepository<T extends Model> {
   async delete(ID: number): Promise<any> {
     const recordToDelete = await this.model.findByPk(ID);
     return await recordToDelete!.destroy();
+  }
+  async count(): Promise<number> {
+    return await this.model.count();
+  }
+  async findOne(options: FindOptions): Promise<T | null> {
+    return await this.model.findOne(options);
   }
 }

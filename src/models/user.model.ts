@@ -66,5 +66,5 @@ export class User extends Model {
     record.dataValues.passWord = hash;
   }
   @HasMany(() => Cart)
-  carts!: Cart[];
+  cart!: Cart;
 }
